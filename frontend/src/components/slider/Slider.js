@@ -1,13 +1,40 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import "./Slider.scss"; 
 import { sliderData } from './slider-data';
 import { useNavigate } from "react-router-dom";
 const Slider = () => {
-    const [currentSlide, setCurrentSlide] = React.useState(0);
     const naviagte =  useNavigate();
-    const prevSlide = () => {}
-    const nextSlide = () => {}
+    const [currentSlide, setCurrentSlide] = React.useState(0);
+
+    const slideLength = sliderData.length;
+    const autoSlide = true;
+    let slideInterval;
+    let intervalTime = 5000;
+
+    const nextSlide = () => {
+        setCurrentSlide(currentSlide === slideLength - 1 ? 0 :  currentSlide + 1);
+    };
+    const prevSlide = () => {
+        setCurrentSlide(currentSlide === 0 ? slideLength - 1 : currentSlide - 1);
+    };
+
+    // when I visit the page the slide should start from 0
+    useEffect(() => {
+        setCurrentSlide(0);
+    }, []);
+
+    // AutoSlide
+    useEffect(() => {
+        if(autoSlide){
+            const auto = () => {
+                slideInterval = setInterval(nextSlide, intervalTime);
+            }
+            auto();
+        }
+        return () => clearInterval(slideInterval);
+    }, [currentSlide, intervalTime, autoSlide]);
+
 
   return (
     <div className='slider'>
