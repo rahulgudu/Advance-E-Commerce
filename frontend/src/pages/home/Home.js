@@ -36,10 +36,16 @@ const Home = () => {
           <ProductCarousel product={products} />
         </div>
       </section>
-      <section className='--bt-grey'>
+      <section className='--bg-grey'>
         <div className='container'>
           <h3>Categories</h3>
           <ProductCategory />
+        </div>
+      </section>
+      <section>
+        <div className="container">
+          <PageHeading heading="Mobile Phones" btnText="Shop Now"/>
+          <ProductCarousel product={products} />
         </div>
       </section>
     </>
