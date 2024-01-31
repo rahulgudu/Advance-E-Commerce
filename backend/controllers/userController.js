@@ -2,7 +2,7 @@ const asyncHanler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
-const generateToken = () => {
+const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRETKEY, { expiresIn: "1d" });
 };
 
@@ -12,11 +12,11 @@ const registerUser = asyncHanler(async (req, res) => {
   //Validation
   if (!name || !email || !password) {
     res.status(400);
-    throw newError("Please fill in all required fields");
+    throw new Error("Please fill in all required fields");
   }
   if (password.length < 6) {
     res.status(400);
-    throw newError("Password must be up to 6 characters");
+    throw new Error("Password must be up to 6 characters");
   }
 
   // Check if user exists
