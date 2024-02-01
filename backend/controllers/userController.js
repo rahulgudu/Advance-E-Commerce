@@ -63,19 +63,19 @@ const registerUser = asyncHanler(async (req, res) => {
 });
 
 // Login User
-const loginUser = asyncHanler(async(req, res) => {
+const loginUser = asyncHanler(async (req, res) => {
   const { email, password } = req.body;
 
   //Validation
-  if(!email || !password){
+  if (!email || !password) {
     res.status(400);
     throw new Error("Please add email and password");
   }
 
   // Check if exists
-  const user = await User.findOne({email});
+  const user = await User.findOne({ email });
 
-  if(!user){
+  if (!user) {
     res.status(400);
     throw new Error("User doesn't exist");
   }
@@ -85,8 +85,8 @@ const loginUser = asyncHanler(async(req, res) => {
 
   // Generate token
   const token = generateToken(user._id);
-  if(user && passwordIsCorrect){
-    const newUser = await User.findOne({email}).select("-password");
+  if (user && passwordIsCorrect) {
+    const newUser = await User.findOne({ email }).select("-password");
     res.cookie("token", token, {
       path: "/",
       httpOnly: true,
@@ -97,14 +97,25 @@ const loginUser = asyncHanler(async(req, res) => {
 
     // Send user data
     res.status(201).json(newUser);
-  } else{
+  } else {
     res.status(400);
     throw new Error("Invalid email or password");
   }
-  
-})
+});
+
+const logout = asyncHanler(async (req, res) => {
+  res.cookie("token", "", {
+    path: "/",
+    httpOnly: true,
+    expires: new Date(0),
+    //   secure: true,
+    //   sameSite: none,
+  });
+  res.status(200).json({message : "Successfully logged out"});
+});
 
 module.exports = {
   registerUser,
-  loginUser
+  loginUser,
+  logout,
 };
