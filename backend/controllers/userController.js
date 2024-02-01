@@ -114,8 +114,20 @@ const logout = asyncHanler(async (req, res) => {
   res.status(200).json({message : "Successfully logged out"});
 });
 
+// Get User
+const getUser = asyncHanler(async(req, res) => {
+  const user = await User.findById(req.user._id).select("-password");
+  if(user){
+    res.status(200).json(user);
+  } else{
+    res.status(400)
+    throw new Error('User not found');
+  }
+})
+
 module.exports = {
   registerUser,
   loginUser,
   logout,
+  getUser,
 };
