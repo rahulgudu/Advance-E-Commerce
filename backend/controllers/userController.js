@@ -123,11 +123,28 @@ const getUser = asyncHanler(async(req, res) => {
     res.status(400)
     throw new Error('User not found');
   }
-})
+});
+
+// Get login status
+const getLoginStatus = asyncHanler(async(req, res) => {
+  const token = req.cookies.token;
+  if(!token){
+    res.json(false);
+  }
+
+  // Verify token
+  const verified = jwt.verify(token, process.env.JWT_SECRETKEY);
+  if (!verified) {
+    res.json(false)
+  } else{
+    res.json(true)
+  }
+});
 
 module.exports = {
   registerUser,
   loginUser,
   logout,
   getUser,
+  getLoginStatus,
 };
