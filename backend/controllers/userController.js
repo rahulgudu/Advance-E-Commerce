@@ -141,10 +141,29 @@ const getLoginStatus = asyncHanler(async(req, res) => {
   }
 });
 
+// Update token
+const updateUser = asyncHanler(async(req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if(user){
+    const { name, phone, address } = user;
+    user.name = req.body.name || name;
+    user.phone = req.body.phone || phone;
+    user.address = req.body.address || address;
+
+    const updateUser = await user.save();
+    res.status(200).json(updateUser);
+  } else{
+    res.status(404);
+    throw new Error("User don't exist");
+  }
+})
+
 module.exports = {
   registerUser,
   loginUser,
   logout,
   getUser,
   getLoginStatus,
+  updateUser,
 };
