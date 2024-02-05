@@ -141,7 +141,7 @@ const getLoginStatus = asyncHanler(async(req, res) => {
   }
 });
 
-// Update token
+// Update User
 const updateUser = asyncHanler(async(req, res) => {
   const user = await User.findById(req.user._id);
 
@@ -157,7 +157,17 @@ const updateUser = asyncHanler(async(req, res) => {
     res.status(404);
     throw new Error("User don't exist");
   }
-})
+});
+
+// Update User Photo
+const updatePhoto = asyncHanler (async(req, res) => {
+  const { photo } = req.body;
+  const user = await User.findById(req.user._id);
+  user.photo = photo;
+  const  updatedUser = await user.save();
+  res.status(200).json(updatedUser);
+});
+
 
 module.exports = {
   registerUser,
@@ -166,4 +176,5 @@ module.exports = {
   getUser,
   getLoginStatus,
   updateUser,
+  updatePhoto,
 };
