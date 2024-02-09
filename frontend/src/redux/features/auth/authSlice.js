@@ -53,10 +53,10 @@ const authSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
         state.user = null;
-        toast.success(action.payload);
+        toast.error(action.payload);
       });
   },
 });
 
-export const {} = authSlice.actions;
+export const {RESET_AUTH} = authSlice.actions;
 export default authSlice.reducer;

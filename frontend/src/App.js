@@ -5,15 +5,27 @@ import Footer from "./components/footer/Footer";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import axios from "axios";
-import { ToastContainer } from "react-toastify";
+import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
-  axios.defaults.withCredentials = true
+  axios.defaults.withCredentials = true;
   return (
     <div>
       <BrowserRouter>
-        <ToastContainer />
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+          transition={Bounce}
+        />
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
