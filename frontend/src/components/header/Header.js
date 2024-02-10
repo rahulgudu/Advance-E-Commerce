@@ -5,6 +5,7 @@ import { FaShoppingCart, FaTimes } from "react-icons/fa";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { RESET_AUTH, logout } from "../../redux/features/auth/authSlice";
+import ShowOnLogin, { ShowOnLogout } from "../hiddenLinks/hiddenLink";
 export const logo = (
   <div className={styles.logo}>
     <Link to="/">
@@ -18,35 +19,35 @@ export const logo = (
 const activeLink = ({ isActive }) => (isActive ? `${styles.active}` : "");
 
 const Header = () => {
-    const [showMenu, setShowMenu] = useState(false);
-    const [scrollPage, setScrollPage] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [scrollPage, setScrollPage] = useState(false);
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const fixNavbar = () => {
-      if(window.scrollY > 50){
-        setScrollPage(true);
-      } else {
-        setScrollPage(true);
-      }
+  const fixNavbar = () => {
+    if (window.scrollY > 50) {
+      setScrollPage(true);
+    } else {
+      setScrollPage(true);
     }
-    window.addEventListener("scroll", fixNavbar);
+  };
+  window.addEventListener("scroll", fixNavbar);
 
-    const toggleMenu = () => {
-        setShowMenu(!showMenu);
-    }
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
 
-    const hideMenu = () => {
-        setShowMenu(false);
-    }
+  const hideMenu = () => {
+    setShowMenu(false);
+  };
 
-    const logoutUser = async () => {
-      await dispatch(logout());
-      await dispatch(RESET_AUTH());
+  const logoutUser = async () => {
+    await dispatch(logout());
+    await dispatch(RESET_AUTH());
 
-      navigate("/login");
-    }
+    navigate("/login");
+  };
 
   const cart = (
     <span className={styles.cart}>
@@ -62,14 +63,23 @@ const Header = () => {
       <div className={styles.header}>
         {logo}
 
-        <nav className={showMenu ? `${styles["show-nav"]}` : `${styles["hide-nav"]}`}>
-
-            <div className={showMenu ? `${styles["nav-wrapper"]} ${styles["show-nav-wrapper"]}` : `${styles["nav-wrapper"]}`} onClick={hideMenu}></div>
+        <nav
+          className={
+            showMenu ? `${styles["show-nav"]}` : `${styles["hide-nav"]}`
+          }
+        >
+          <div
+            className={
+              showMenu
+                ? `${styles["nav-wrapper"]} ${styles["show-nav-wrapper"]}`
+                : `${styles["nav-wrapper"]}`
+            }
+            onClick={hideMenu}
+          ></div>
           <ul>
-
             <li className={styles["logo-mobile"]}>
-                {logo}
-                <FaTimes size={22} color="#fff" onClick={hideMenu} />
+              {logo}
+              <FaTimes size={22} color="#fff" onClick={hideMenu} />
             </li>
 
             <li>
@@ -81,26 +91,34 @@ const Header = () => {
 
           <div className={styles["header-right"]}>
             <span className={styles.links}>
-              <NavLink to={"login"} className={activeLink}>
-                Login
-              </NavLink>
-              <NavLink to={"register"} className={activeLink}>
-                Register
-              </NavLink>
-              <NavLink to={"order-history"} className={activeLink}>
-                My Order
-              </NavLink>
-              <Link to={"/"} onClick={logoutUser}>
-                Logout
-              </Link>
+              <ShowOnLogout>
+                <NavLink to={"login"} className={activeLink}>
+                  Login
+                </NavLink>
+              </ShowOnLogout>
+              <ShowOnLogout>
+                <NavLink to={"register"} className={activeLink}>
+                  Register
+                </NavLink>
+              </ShowOnLogout>
+              <ShowOnLogin>
+                <NavLink to={"order-history"} className={activeLink}>
+                  My Order
+                </NavLink>
+              </ShowOnLogin>
+              <ShowOnLogin>
+                <Link to={"/"} onClick={logoutUser}>
+                  Logout
+                </Link>
+              </ShowOnLogin>
             </span>
             {cart}
           </div>
         </nav>
 
         <div className={styles["menu-icon"]}>
-            {cart}
-            <HiOutlineMenuAlt3 size={28} onClick={toggleMenu} />
+          {cart}
+          <HiOutlineMenuAlt3 size={28} onClick={toggleMenu} />
         </div>
       </div>
     </header>
