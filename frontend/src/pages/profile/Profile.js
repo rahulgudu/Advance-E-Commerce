@@ -3,7 +3,8 @@ import "./profile.scss";
 import PageMenu from "../../components/pageMenu/PageMenu";
 import Card from "../../components/card/Card";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "../../redux/features/auth/authSlice";
+import { getUser, updateUser } from "../../redux/features/auth/authSlice";
+import Loader from "../../components/loader/Loader";
 const Profile = () => {
   const { isLoading, user } = useSelector((state) => state.auth);
   const initialState = {
@@ -24,7 +25,7 @@ const Profile = () => {
   }, [dispatch, user]);
 
   useEffect(() => {
-    if (user === null) {
+    if (user !== null) {
       if (user) {
         setProfile({
           name: user?.name || "",
@@ -35,18 +36,36 @@ const Profile = () => {
         });
       }
     }
-  }, [dispatch, user]);
+  }, [user]);
 
-  const handleImageChange = (e) => {
+  const handleImageChange = () => {};
+
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProfile({ ...profile, [name]: value });
   };
-  const handleInputChange = () => {};
-  const saveProfile = async () => {};
+
+  const saveProfile = async (e) => {
+    e.preventDefault();
+    const userData = {
+      name: profile.name,
+      phone: profile.phone,
+      address: {
+        address: {
+          address: profile.address,
+          state: profile.state,
+          country: profile.country
+        }
+      }
+    }
+    // console.log(userData);
+    await dispatch(updateUser(userData));
+  };
 
   return (
     <>
       <section>
+      {isLoading && <Loader />}
         <div className="container">
           <PageMenu />
           <h2>Profile</h2>
@@ -74,6 +93,7 @@ const Profile = () => {
                         value={profile?.name}
                         name="name"
                         onChange={handleInputChange}
+                        required
                       />
                     </p>
                     <p>
@@ -83,6 +103,7 @@ const Profile = () => {
                         value={profile?.email}
                         name="email"
                         onChange={handleInputChange}
+                        required
                         disabled
                       />
                     </p>
@@ -93,24 +114,37 @@ const Profile = () => {
                         value={profile?.phone}
                         name="phone"
                         onChange={handleInputChange}
+                        required
                       />
                     </p>
                     <p>
                       <label>Address : </label>
                       <input
                         type="text"
-                        value={profile?.address?.address}
+                        value={profile?.address?.address?.address}
                         name="address"
                         onChange={handleInputChange}
+                        required
+                      />
+                    </p>
+                    <p>
+                      <label>State : </label>
+                      <input
+                        type="text"
+                        value={profile?.address?.address?.state}
+                        name="state"
+                        onChange={handleInputChange}
+                        required
                       />
                     </p>
                     <p>
                       <label>Country : </label>
                       <input
                         type="text"
-                        value={profile?.address?.country}
+                        value={profile?.address?.address?.country}
                         name="country"
                         onChange={handleInputChange}
+                        required
                       />
                     </p>
                     <button className="--btn --btn-primary --btn-block">
