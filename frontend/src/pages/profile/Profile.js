@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./profile.scss";
 import PageMenu from "../../components/pageMenu/PageMenu";
 import Card from "../../components/card/Card";
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import { getUser } from "../../redux/features/auth/authSlice";
 const Profile = () => {
   const { isLoading, user } = useSelector((state) => state.auth);
   const initialState = {
@@ -15,8 +15,32 @@ const Profile = () => {
   };
 
   const [profile, setProfile] = useState(initialState);
+  const dispatch = useDispatch();
 
-  const handleImageChange = () => {};
+  useEffect(() => {
+    if (user === null) {
+      dispatch(getUser());
+    }
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    if (user === null) {
+      if (user) {
+        setProfile({
+          name: user?.name || "",
+          email: user?.email || "",
+          phone: user?.phone || "",
+          role: user?.role || "",
+          address: user?.address || {},
+        });
+      }
+    }
+  }, [dispatch, user]);
+
+  const handleImageChange = (e) => {
+    const { name, value } = e.target;
+    setProfile({ ...profile, [name]: value });
+  };
   const handleInputChange = () => {};
   const saveProfile = async () => {};
 
@@ -90,7 +114,7 @@ const Profile = () => {
                       />
                     </p>
                     <button className="--btn --btn-primary --btn-block">
-                        Update
+                      Update
                     </button>
                   </form>
                 </>
