@@ -11,6 +11,7 @@ import {
 } from "../../redux/features/auth/authSlice";
 import Loader from "../../components/loader/Loader";
 import { toast } from "react-toastify";
+import { shortenText } from "../../utils";
 
 const cloud_name = process.env.REACT_APP_CLOUD_NAME;
 const upload_preset = process.env.REACT_APP_UPLOAD_PRESET;
@@ -24,7 +25,7 @@ const Profile = () => {
     phone: user?.phone || "",
     role: user?.role || "",
     photo: user?.photo || "",
-    address: user?.address || {
+    address: {
       address: user?.address?.address || "",
       state: user?.address?.state || "",
       country: user?.address?.country || "",
@@ -51,7 +52,7 @@ const Profile = () => {
           phone: user?.phone || "",
           role: user?.role || "",
           photo: user?.photo || "",
-          address: user?.address || {
+          address: {
             address: user?.address?.address || "",
             state: user?.address?.state || "",
             country: user?.address?.country || "",
