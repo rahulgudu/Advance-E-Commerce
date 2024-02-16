@@ -4,8 +4,14 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import PageMenu from "../../components/pageMenu/PageMenu";
 import Card from "../../components/card/Card";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser, updateUser } from "../../redux/features/auth/authSlice";
+import { getUser, updatePhoto, updateUser } from "../../redux/features/auth/authSlice";
 import Loader from "../../components/loader/Loader";
+import { toast } from "react-toastify";
+
+const cloud_name = process.env.REACT_APP_CLOUD_NAME;
+const upload_preset = process.env.REACT_APP_UPLOAD_PRESET;
+const url = "https://api.cloudinary.com/v1_1/rahulgudu/image/upload";
+
 const Profile = () => {
   const { isLoading, user } = useSelector((state) => state.auth);
   const initialState = {
@@ -13,7 +19,12 @@ const Profile = () => {
     email: user?.email || "",
     phone: user?.phone || "",
     role: user?.role || "",
-    address: user?.address || {},
+    photo: user?.photo || "",
+    address: user?.address || {
+      address: user?.address?.address || "",
+      state: user?.address?.state || "",
+      country: user?.address?.country || "",
+    },
   };
 
   const [profile, setProfile] = useState(initialState);
@@ -35,7 +46,12 @@ const Profile = () => {
           email: user?.email || "",
           phone: user?.phone || "",
           role: user?.role || "",
-          address: user?.address || {},
+          photo: user?.photo || "",
+          address: user?.address || {
+            address: user?.address?.address || "",
+            state: user?.address?.state || "",
+            country: user?.address?.country || "",
+          },
         });
       }
     }
@@ -68,7 +84,36 @@ const Profile = () => {
     await dispatch(updateUser(userData));
   };
 
-  const saveImage = () => {};
+  const saveImage = async (e) => {
+    e.preventDefault();
+    let imageURL;
+    try {
+      if(profileImage !== null && (profileImage.type === "image/jpeg" || profileImage.type === "image/jpg" || profileImage.type === "image/png")){
+        const image = new FormData();
+        image.append("file", profileImage);
+        image.append("cloud_name", cloud_name);
+        image.append("upload_preset", upload_preset);
+
+        // Save image to cloudinary
+        const response = await fetch(url, {
+          method: "post",
+          body: image
+        });
+        const imgData = await response.json();
+        // console.log(imgData);
+        imageURL = imgData.url.toString();
+      }
+      // save image to mongodb
+      const userData = {
+        photo: profileImage ? imageURL : profile.photo
+      }
+
+      await dispatch(updatePhoto(userData));
+      setImagePreview(null);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
 
   return (
     <>
