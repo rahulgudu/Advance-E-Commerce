@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./profile.scss";
+import { AiOutlineCloudUpload } from "react-icons/ai";
 import PageMenu from "../../components/pageMenu/PageMenu";
 import Card from "../../components/card/Card";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +17,8 @@ const Profile = () => {
   };
 
   const [profile, setProfile] = useState(initialState);
+  const [profileImage, setProfileImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -38,7 +41,10 @@ const Profile = () => {
     }
   }, [user]);
 
-  const handleImageChange = () => {};
+  const handleImageChange = (e) => {
+    setProfileImage(e.target.files[0]);
+    setImagePreview(URL.createObjectURL(e.target.files[0]));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -54,18 +60,20 @@ const Profile = () => {
         address: {
           address: profile.address,
           state: profile.state,
-          country: profile.country
-        }
-      }
-    }
+          country: profile.country,
+        },
+      },
+    };
     // console.log(userData);
     await dispatch(updateUser(userData));
   };
 
+  const saveImage = () => {};
+
   return (
     <>
       <section>
-      {isLoading && <Loader />}
+        {isLoading && <Loader />}
         <div className="container">
           <PageMenu />
           <h2>Profile</h2>
@@ -74,7 +82,26 @@ const Profile = () => {
               {!isLoading && (
                 <>
                   <div className="profile-photo">
-                    <h2>Profile Image</h2>
+                    <div>
+                      <img
+                        src={imagePreview === null ? user?.photo : imagePreview}
+                        alt="profile"
+                      />
+                      <h3>Role : {profile.role}</h3>
+                      {imagePreview != null && (
+                        <div className="--center-all">
+                          <button
+                            className="--btn --btn-secondary"
+                            onClick={saveImage}
+                          >
+                            <AiOutlineCloudUpload
+                              size={18}
+                            ></AiOutlineCloudUpload>
+                            Upload Photo
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <form onSubmit={saveProfile}>
                     <p>
