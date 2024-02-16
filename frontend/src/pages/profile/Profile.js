@@ -4,7 +4,11 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import PageMenu from "../../components/pageMenu/PageMenu";
 import Card from "../../components/card/Card";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser, updatePhoto, updateUser } from "../../redux/features/auth/authSlice";
+import {
+  getUser,
+  updatePhoto,
+  updateUser,
+} from "../../redux/features/auth/authSlice";
 import Loader from "../../components/loader/Loader";
 import { toast } from "react-toastify";
 
@@ -88,7 +92,12 @@ const Profile = () => {
     e.preventDefault();
     let imageURL;
     try {
-      if(profileImage !== null && (profileImage.type === "image/jpeg" || profileImage.type === "image/jpg" || profileImage.type === "image/png")){
+      if (
+        profileImage !== null &&
+        (profileImage.type === "image/jpeg" ||
+          profileImage.type === "image/jpg" ||
+          profileImage.type === "image/png")
+      ) {
         const image = new FormData();
         image.append("file", profileImage);
         image.append("cloud_name", cloud_name);
@@ -97,7 +106,7 @@ const Profile = () => {
         // Save image to cloudinary
         const response = await fetch(url, {
           method: "post",
-          body: image
+          body: image,
         });
         const imgData = await response.json();
         // console.log(imgData);
@@ -105,8 +114,8 @@ const Profile = () => {
       }
       // save image to mongodb
       const userData = {
-        photo: profileImage ? imageURL : profile.photo
-      }
+        photo: profileImage ? imageURL : profile.photo,
+      };
 
       await dispatch(updatePhoto(userData));
       setImagePreview(null);
@@ -120,9 +129,10 @@ const Profile = () => {
       <section>
         {isLoading && <Loader />}
         <div className="container">
-          <PageMenu />
           <h2>Profile</h2>
+          <PageMenu />
           <div className="--flex-start profile">
+            
             <Card cardClass={"card"}>
               {!isLoading && (
                 <>
