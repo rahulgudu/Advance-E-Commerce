@@ -38,7 +38,11 @@ const userSchema = mongoose.Schema({
     address: {
         type: Object
     }
-});
+},
+{
+    timestamp: true
+}
+);
 
 // Encrypt pass before saving to DB
 userSchema.pre("save", async function(next){
